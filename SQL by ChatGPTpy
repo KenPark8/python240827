@@ -1,0 +1,92 @@
+import sqlite3
+import random
+import string
+
+class ProductDatabase:
+    def __init__(self, db_name=":memory:"):
+        self.conn = sqlite3.connect(db_name)
+        self.cursor = self.conn.cursor()
+        self.create_table()
+
+    def create_table(self):
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS products (
+            product_id INTEGER PRIMARY KEY,
+            product_name TEXT NOT NULL,
+            price REAL NOT NULL
+        )
+        """)
+        self.conn.commit()
+
+    def insert_product(self, product_name, price):
+        self.cursor.execute("INSERT INTO products (product_name, price) VALUES (?, ?)", (product_name, price))
+        self.conn.commit()
+
+    def update_product(self, product_id, product_name=None, price=None):
+        if product_name and price:
+            self.cursor.execute("UPDATE products SET product_name = ?, price = ? WHERE product_id = ?", (product_name, price, product_id))
+        elif product_name:
+            self.cursor.execute("UPDATE products SET product_name = ? WHERE product_id = ?", (product_name, product_id))
+        elif price:
+            self.cursor.execute("UPDATE products SET price = ? WHERE product_id = ?", (price, product_id))
+        self.conn.commit()
+
+    def delete_product(self, product_id):
+        self.cursor.execute("DELETE FROM products WHERE product_id = ?", (product_id,))
+        self.conn.commit()
+
+    def select_all_products(self):
+        self.cursor.execute("SELECT * FROM products")
+        return self.cursor.fetchall()
+
+    def close(self):
+        self.conn.close()
+
+# 샘플 데이터 생성
+def generate_random_string(length=10):
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
+
+def generate_sample_data():
+    products = []
+    for i in range(1, 101):
+        product_name = f"Product_{generate_random_string()}"
+        price = round(random.uniform(50, 1000), 2)
+        products.append((product_name, price))
+    return products
+
+# 메인 실행 부분
+if __name__ == "__main__":
+    # 데이터베이스 객체 생성
+    db = ProductDatabase()
+
+    # 샘플 데이터 생성 및 삽입
+    sample_data = generate_sample_data()
+    for product_name, price in sample_data:
+        db.insert_product(product_name, price)
+
+    # 데이터베이스에서 모든 제품 조회
+    products = db.select_all_products()
+    print("All Products:")
+    for product in products:
+        print(product)
+
+    # 예시: 특정 제품 업데이트
+    db.update_product(1, product_name="Updated Product", price=200.00)
+    
+    # 업데이트 후 조회
+    print("\nAfter Update:")
+    updated_product = db.select_all_products()
+    for product in updated_product:
+        print(product)
+
+    # 예시: 특정 제품 삭제
+    db.delete_product(2)
+
+    # 삭제 후 조회
+    print("\nAfter Delete:")
+    remaining_products = db.select_all_products()
+    for product in remaining_products:
+        print(product)
+
+    # 데이터베이스 연결 종료
+    db.close()
