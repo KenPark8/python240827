@@ -11,12 +11,17 @@ driver.get("https://www.google.co.kr")
 time.sleep(3)
 
 #<textarea class="gLFyf" jsaction="paste:puy29d;" id="APjFqb" maxlength="2048" name="q" rows="1" aria-activedescendant="" aria-autocomplete="both" aria-controls="Alh6id" aria-expanded="false" aria-haspopup="both" aria-owns="Alh6id" autocapitalize="off" autocomplete="off" autocorrect="off" autofocus="" role="combobox" spellcheck="false" title="검색" type="search" value="" aria-label="검색" data-ved="0ahUKEwiN1oGW9oGEAxU0nq8BHYCKAqkQ39UDCA4"></textarea>
+
 #검색어창 찾기
-searchBox = driver.find_element(By.CLASS_NAME, "gLFyf")
+#searchBox = driver.find_element(By.CLASS_NAME, "gLFyf")
+
 #XPath를 사용하는 경우
 #//*[@id="APjFqb"]
-#searchBox = driver.find_element(By.XPATH,"//*[@id='APjFqb']")
+searchBox = driver.find_element(By.XPATH,"//*[@id='APjFqb']")
 
-searchBox.send_keys("맥북")
+searchBox.send_keys("아이폰 16")
 searchBox.send_keys(Keys.RETURN)
-time.sleep(5)
+#time.sleep(5)
+#또는 무한루프
+while True:
+    pass

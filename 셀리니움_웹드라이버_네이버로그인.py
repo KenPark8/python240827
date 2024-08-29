@@ -13,7 +13,7 @@ driver.get('https://nid.naver.com/nidlogin.login')
 loginID = "kim"
 clipboard.copy(loginID)
 #mac은 COMMAND, window는 CONTROL
-driver.find_element(By.XPATH,'//*[@id="id"]').send_keys(
+driver.find_element(By.XPATH,'//*[@id="id"]').send_keys(    # // : 전체계층, @ : 모든 태그
     Keys.CONTROL, 'v')
 
 loginPW = "1234"
